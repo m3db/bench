@@ -27,9 +27,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/m3db/m3db"
 	"github.com/m3db/m3db/bootstrap"
 	"github.com/m3db/m3db/bootstrap/bootstrapper/fs"
+	"github.com/m3db/m3db/interfaces/m3db"
 	"github.com/m3db/m3db/storage"
 )
 
@@ -62,7 +62,7 @@ func main() {
 	}
 
 	bootstrapperNames := strings.Split(*bootstrapperList, ",")
-	var bs memtsdb.Bootstrapper
+	var bs m3db.Bootstrapper
 	for i := len(bootstrapperNames) - 1; i >= 0; i-- {
 		switch bootstrapperNames[i] {
 		case fs.FileSystemBootstrapperName:

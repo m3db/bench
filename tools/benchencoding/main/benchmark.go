@@ -26,7 +26,7 @@ import (
 	"time"
 
 	"github.com/m3db/bench/fs"
-	"github.com/m3db/m3db"
+	"github.com/m3db/m3db/interfaces/m3db"
 	"github.com/m3db/m3db/x/logging"
 	xtime "github.com/m3db/m3db/x/time"
 )
@@ -40,8 +40,8 @@ type benchmark struct {
 	encodeTimeUnit xtime.Unit
 	inputReader    *fs.Reader
 
-	encoder memtsdb.Encoder
-	decoder memtsdb.Decoder
+	encoder m3db.Encoder
+	decoder m3db.Decoder
 
 	numDatapoints   int64
 	numEncodedBytes int64
@@ -56,8 +56,8 @@ func newBenchmark(
 	windowSize time.Duration,
 	inputTimeUnit time.Duration,
 	encodeTimeUnit xtime.Unit,
-	encoder memtsdb.Encoder,
-	decoder memtsdb.Decoder,
+	encoder m3db.Encoder,
+	decoder m3db.Decoder,
 ) (*benchmark, error) {
 	reader, err := fs.NewReader(input)
 	if err != nil {
@@ -96,7 +96,7 @@ func (th *benchmark) Run() {
 				// start a new encoding block
 				currentStart, currentEnd = th.rotate(datapoints[i].Timestamp, nw)
 			}
-			if err := th.encode(memtsdb.Datapoint{
+			if err := th.encode(m3db.Datapoint{
 				Timestamp: xtime.FromNormalizedTime(datapoints[i].Timestamp, th.inputTimeUnit),
 				Value:     datapoints[i].Value,
 			}); err != nil {
@@ -111,7 +111,7 @@ func (th *benchmark) Run() {
 	}
 }
 
-func (th *benchmark) encode(dp memtsdb.Datapoint) error {
+func (th *benchmark) encode(dp m3db.Datapoint) error {
 	start := time.Now()
 	if err := th.encoder.Encode(dp, th.encodeTimeUnit, nil); err != nil {
 		return err

@@ -36,9 +36,9 @@ import (
 	"time"
 
 	"github.com/m3db/bench/fs2"
-	"github.com/m3db/m3db"
 	"github.com/m3db/m3db/bootstrap"
 	"github.com/m3db/m3db/context"
+	"github.com/m3db/m3db/interfaces/m3db"
 	"github.com/m3db/m3db/services/m3dbnode/serve"
 	"github.com/m3db/m3db/services/m3dbnode/serve/httpjson"
 	"github.com/m3db/m3db/services/m3dbnode/serve/tchannelthrift"
@@ -125,14 +125,14 @@ func main() {
 	poolingBufferBucketAllocSize := 256
 	poolingSeries := 550000 * amplify // 550k * amplify
 
-	var opts memtsdb.DatabaseOptions
+	var opts m3db.DatabaseOptions
 	opts = storage.NewDatabaseOptions().
 		NowFn(nowFn).
 		BufferFuture(10*time.Minute).
 		BufferPast(10*time.Minute).
 		BufferDrain(10*time.Minute).
 		EncodingTszPooled(poolingBufferBucketAllocSize, poolingSeries).
-		NewBootstrapFn(func() memtsdb.Bootstrap {
+		NewBootstrapFn(func() m3db.Bootstrap {
 		return bootstrap.NewNoOpBootstrapProcess(opts)
 	})
 
@@ -259,7 +259,7 @@ func main() {
 	}
 }
 
-func newDatabase(log logging.Logger, opts memtsdb.DatabaseOptions) storage.Database {
+func newDatabase(log logging.Logger, opts m3db.DatabaseOptions) storage.Database {
 	shards := uint32(1024)
 	shardingScheme, err := sharding.NewShardScheme(0, shards-1, func(id string) uint32 {
 		return murmur3.Sum32([]byte(id)) % shards
