@@ -82,6 +82,11 @@ testhtml: test-internal
 	gocov convert $(coverfile) | gocov-html > $(html_report) && open $(html_report)
 	@rm -f $(test_log) &> /dev/null
 
+install-ci: 
+	git submodule update --init --recursive
+
+test-ci: test-internal
+
 clean:
 	@rm -f *.html *.xml *.out *.test
 
