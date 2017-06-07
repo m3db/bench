@@ -3,6 +3,7 @@
 Benchmarks for M3DB components.
 
 <hr>
+
 This project is released under the [MIT License](LICENSE.md).
 
 [doc-img]: https://godoc.org/github.com/m3db/bench?status.svg
